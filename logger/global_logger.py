@@ -1,11 +1,11 @@
 import json
 import requests
 
-from constants import ENV, QUEUE_ENDPOINT
+from constants import ENV, QUEUE_URL, QUEUE_TOPIC
 from logger.logger import global_service_logger
 
 class LOGGER_QUEUE:
-    def __init__(self, logger_endpoint=QUEUE_ENDPOINT):
+    def __init__(self, logger_endpoint=QUEUE_URL):
         self.endpoint = logger_endpoint
 
 
@@ -25,9 +25,11 @@ class LOGGER_QUEUE:
             if 'source' not in data:
                 data.update(source='api')
             resp = requests.post(
-                self.endpoint, json=data
+                self.endpoint, json=dict(
+                    topic=QUEUE_TOPIC,
+                    data=data
+                )
             )
-
             if resp.ok:
                 return
             
